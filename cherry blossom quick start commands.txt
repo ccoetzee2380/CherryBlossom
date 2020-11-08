@@ -1,0 +1,593 @@
+//############### changing unix root password cherry blossom ######################3
+
+sudo passwd root
+
+//################### move to root user cherry blossom ########################
+
+sudo su root 
+
+
+//################ cherry blossom default username and password #####################
+
+user: debian
+pass: temppwd
+
+user: cherry
+pass: blossom
+	
+//###################### install set programs some cherry blossom ##############################
+
+
+*********************************** expanding beagle bone blck sd card image ******************
+
+sudo apt-get update
+sudo apt-get upgrade
+
+//expand the files system 
+cd /opt/scripts/tools/
+git pull
+sudo ./grow_partition.sh
+sudo reboot
+
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get -f install
+
+sudo apt-get update
+sudo apt-get upgrade
+
+//=======================================================
+//grow sd card size
+//
+
+sudo /opt/scripts/tools/grow_partition.sh
+
+https://elinux.org/Beagleboard:Expanding_File_System_Partition_On_A_microSD
+
+
+
+***************** sequence important here ****************************
+
+sudo apt-get update
+sudo apt-get upgrade ............................Takes along on 600Mhz
+
+sudo apt-get install gnome-tweak-tool..............Takes along on 600Mhz
+
+sudo apt-get install exfat-fuse exfat-utils
+
+sudo apt-get install software-properties-common
+
+sudo apt-get install python-software-properties
+
+sudo apt-get install build-essential python-dev python-setuptools python-pip python-smbus -y
+
+sudo pip install Adafruit_BBIO
+
+sudo apt-get update
+sudo apt-get upgrade
+
+sudo dhclient
+
+sudo apt-get update
+sudo apt-get upgrade 
+
+sudo apt-get -y install lxde lxde-core lxde-icon-theme  .......................when running this command the eth0 will stop , use the usb interface to log back in and configure rest
+
+sudo apt-get install xz-utils
+
+sudo dhclient
+
+sudo apt-get update
+sudo apt-get upgrade 
+
+sudo apt-get install samba ..................... windows file sharing 
+
+sudo apt-get install ssh ......................... ssh telnet server
+sudo apt-get install vsftpd .......................ftpserver
+
+sudo apt-get install make
+sudo apt-get install gcc
+sudo apt-get install python
+sudo apt-get install python3
+
+sudo apt-get install git-core
+sudo apt-get install cron ....................... task sheduler
+sudo apt-get install mc		.................... midnight comander similar to norton comander/totalcommander
+
+sudo apt-get install minicom
+sudo apt-get install picocom
+
+sudo apt-get install network-manager
+
+sudo apt-get install wput
+
+sudo apt-get install aptitude
+sudo aptitude reinstall lightdm
+sudo aptitude install gdm
+
+
+sudo apt-get update
+sudo apt-get upgrade
+
+
+sudo apt-get install tightvncserver
+sudo apt-get install xrdp ........................ remote desktop
+
+sudo apt-get update
+sudo apt-get upgrade
+
+sudo dhclient ................needed to start LAN connection for dhcp client interface
+
+
+sudo apt-get install --no-install-recommends ubuntu-desktop gnome-panel gnome-settings-daemon metacity nautilus gnome-terminal gnome-core
+sudo apt-get install vnc4server
+sudo cp /usr/bin/vncserver /usr/bin/vncserver.bkp
+sudo vim /usr/bin/vncserver
+
+#Find this line "# exec /etc/X11/xinit/xinitrcnn".
+#and add these lines like below
+
+    "# exec /etc/X11/xinit/xinitrcnn".
+       "gnome-panel &n".
+       "gnome-settings-daemon &n".
+       "metacity &n".
+       "nautilus &n".
+       "gnome-terminal &n".
+
+$ vncserver
+You will require a password to access your desktops through VNC Clients.
+Password:******
+Verify:******
+
+
+xauth: file /root/.Xauthority does not exist
+New 'ubuntu-desktop:1 (root)' desktop is ubuntu-desktop:1
+
+Starting applications specified in /root/.vnc/xstartup
+Log file is /root/.vnc/ubuntu-desktop:1.log
+
+$ netstat -tulpn
+
+#allow SSH
+$ sudo ufw allow OpenSSH
+
+#allowing single port 5901 port
+$ sudo ufw allow 5901/tcp
+
+#To allow series of port 5901 - 5910, follow
+$ sudo ufw allow 5901:5910/tcp
+
+#To check firewall rules
+$ sudo  ufw status verbose
+
+
+
+############################## optional###############################
+
+sudo apt-get install dkms
+sudo apt-get install vim emacs gedit
+
+sudo apt-get install libv4l-0
+sudo apt-get install uvccapture
+sudo apt-get install streamer
+
+sudo apt-get install cheese
+sudo apt-get install fswebcam
+
+sudo apt-get install motion
+
+
+//################################### creating the rc.local service to use it to execute startup code
+
+create the file if it does not exist
+
+sudo nano -w /etc/rc.local
+
+add the folloing in the file 
+
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+exit 0
+
+
+Close and save teh file with the above content
+
+
+
+Create the service
+
+nano /lib/systemd/rc.local.service
+Edit the above file as necessary to invoke the different functionalities like network. Enable these only if the code needs that particular service. Disable unwanted ones to decrease boot time.
+
+[Unit]
+Description=rc.local strtup
+After=syslog.target network.target
+[Service]
+Type=simple
+ExecStart=/etc/rc.local
+[Install]
+WantedBy=multi-user.target
+
+
+Create a symbolic link to let the device know the location of the service.
+
+cd /etc/systemd/system/
+ln /lib/systemd/rc.local.service rc.local.service
+
+Make systemd reload the configuration file, start the service immediately (helps to see if the service is functioning properly) and 
+enable the unit files specified in the command line.
+
+systemctl daemon-reload
+systemctl start rc.local.service
+systemctl enable rc.local.service
+
+Restart BBB immediately to see if it runs as intended.
+
+reboot 
+
+
+########################## network config if required and not using DHCP ##################################
+
+ifconfig -a
+ifconfig eth0 down
+ifconfig eth0 up
+
+ifconfig eth0 192.168.2.2 netmask 255.255.255.0 broadcast 192.168.2.255
+ifconfig eth0 mtu 1500
+
+route add default gw 172.30.10.1 ..change per your gateways settingns
+
+
+
+Permanent settings
+
+# cat /etc/sysconfig/network
+NETWORKING=yes
+HOSTNAME=frida.localdomain
+GATEWAY=172.30.10.1
+
+
+# cat /etc/sysconfig/network-scripts/ifcfg-eth0
+DEVICE=eth0
+BOOTPROTO=static
+BROADCAST=172.30.10.255
+IPADDR=172.30.10.101
+NETMASK=255.255.255.0
+ONBOOT=yes
+
+# service network restart
+Shutting down interface eth0:                              [  OK  ]
+Shutting down loopback interface:                          [  OK  ]
+Setting network parameters:                                [  OK  ]
+Bringing up loopback interface:                            [  OK  ]
+Bringing up interface eth0:                                [  OK  ]
+
+Configure DNS server
+
+echo “nameserver 207.62.187.54” > /etc/resolv.conf
+
+
+
+
+
+######################################### LXDE on bbb debian weezy ####################3
+
+LXDE With Debian Wheezy
+
+This section assumes you have completed either of the processes described on Debian On BeagleBone Black. This section section describes how to install LXDE on a micro SD card or the eMMC, with Debian Wheezy, that you can boot from with your BeagleBone Black. It is probably the most stable out of the options listed on this page.
+
+    With a powered off BBB, make sure you have the micro SD card with Debian Wheezy installed on it in the BBB. Also, be sure to have Ethernet, a display, mouse, and keyboard plugged in
+    While holding the 'boot' button, apply power to board and don't release the 'boot' button until the USER LEDs begin to flicker
+        You should use a 5V external power source, USB power may not work
+    After about a minute your screen show should the login prompt. Sign in
+        If you are booting from a microSD card
+
+        User: debian
+        Password: debian
+
+        If you are booting from the eMMC
+
+        User: debian
+        Password: temppwd
+
+    Enter the command: sudo apt-get update
+
+    After about 2 minutes that process will finish. 
+
+Then enter the command: sudo apt-get -y install lxde lxde-core lxde-icon-theme
+
+        This will begin installing LXDE onto the micro SD card or eMMC. It will finish after about 30 minutes
+    When the terminal returns to the comand line type: "sudo reboot" and hit enter
+
+        Remember, the password is: debian or temppwd
+    This will restart the BBB and after a few minutes there will be an LXDE login prompt. Select 'Debian User' and sign in
+        If the BBB doesn't reboot with LXDE interface, remove power, and re-apply the power. 
+    You will now have an LXDE desktop.
+
+
+
+###################### hosts ###########################
+
+add hosts to hosts file in sudo nano -w /etc/hosts
+
+httpredir.debian.org has address 176.9.184.93
+httpredir.debian.org has address 5.153.231.35
+httpredir.debian.org has address 128.31.0.66
+httpredir.debian.org has IPv6 address 2001:41c8:1000:21::21:35
+httpredir.debian.org has IPv6 address 2a01:4f8:151:555d::42
+
+
+
+#################### RC.Local ############################ advise do this before istalling the lxde desktop
+
+add startup programs under rc.local
+
+sudo nano -w /etc/rc.local
+
+sudo ifconfig eth0 192.168.1.100 netmask 255.255.255.0 broadcast 192.168.1.255
+sudo route add default gw 192.168.1.1
+sudo dhclient
+
+
+################# resolve.conf ########################
+
+this is your dns name you want to use to resolve adresses
+
+echo “nameserver 8.8.8.8” > /etc/resolv.conf
+
+
+
+invoke-rc.d hostname.sh start
+invoke-rc.d networking force-reload
+invoke-rc.d network-manager force-reload
+
+#################### cloning a SD card after setup  is complete######################
+
+find the device sunder /DEV ensure the disks are unmounted before prosessing the dd command
+
+ls /ev will list thed devices on the pc
+do this before inserting the disc and again after inserting the disc, try to find the new device name
+usually this will come up as mmcblk0 
+
+now using the root permisions do the following
+
+sudo dd if=/dev/mmcblk0 | gzip > bbb_sd_image_clone.gz ................ this take some time so be patient
+
+after process is complete , insert the new SD card and follow the following process
+
+sudo gzip -dc bbb_sd_image_clone.gz | sudo dd of /dev/mmcblk1 .............mmcblk1 refers to the new sd card inserted 
+
+again wait until proces is complete , eject the new card and test.
+
+on different linux box 
+dd if=/dev/sdi of=~/bbb_clone.img bs=1M count=4000
+where sdi is the drive on the different linux box  
+bs is block sizes , and count is how many blocks do you want , 1M x 4000 = 4GB size 
+
+
+
+//======================================================================================
+// setting up desktom manager
+//============================
+
+
+
+sudo apt install xfce4
+
+sudo apt install lightdm 
+
+sudo systemctl start lightdm
+
+Just update the file [/etc/X11/xorg.conf.d/01-armbian-defaults.conf]  with the following content:  
+
+Section "ServerLayout"
+   Identifier     "X.org Configured"
+   Screen         0 "Screen0" 0 0
+   InputDevice    "Mouse0" "CorePointer"
+   InputDevice    "Keyboard0" "CoreKeyboard"
+EndSection
+Section "Screen"
+   Identifier   "Screen0"
+   Device       "GraphicCard"
+   Monitor      "Monitor0"
+   SubSection "Display"
+     Depth      24
+     Modes      "800x600"
+   EndSubSection
+EndSection
+Section "Monitor"
+        Identifier              "Monitor0"
+        Option                  "DPMS" "false"
+EndSection
+Section "Device"
+        Identifier      "GraphicCard"
+        Driver          "modesetting"
+EndSection
+Section "InputDevice"
+   Identifier  "Keyboard0"
+   Driver      "kbd"
+EndSection
+Section "InputDevice"
+   Identifier  "Mouse0"
+   Driver      "mouse"
+   Option       "Protocol" "auto"
+   Option       "Device" "/dev/input/mice"
+   Option       "ZAxisMapping" "4 5 6 7"
+EndSection
+Section "ServerFlags"
+        Option                  "BlankTime" "0"
+        Option                  "StandbyTime" "0"
+        Option                  "SuspendTime" "0"
+        Option                  "OffTime" "0"
+EndSection
+
+//====================================================================================
+//controlling GPIO using echo
+
+
+Controlling the GPIO with the file system
+You can use the following commands to control the GPIO with the file system.
+
+Exporting a pin:
+
+echo 40 > /sys/class/gpio/export
+Setting a pin OUTPUT:
+
+echo out > /sys/class/gpio/gpio40/direction
+Writing a pin HIGH:
+
+echo 1 > /sys/class/gpio/gpio40/value
+Writing a pin LOW:
+
+echo 0 > /sys/class/gpio/gpio40/value
+Setting a pin INPUT:
+
+echo in > /sys/class/gpio/gpio40/direction
+Reading the value from an INPUT pin (returns 1 for HIGH and 0 for LOW):
+
+cat /sys/class/gpio/gpio40/value
+
+
+
+//=====================================================================================
+//Controlling the GPIO with BoneScript
+//You can use the following BoneScript commands to control the GPIO.
+//
+//Loading a BoneScript module:
+
+var b = require('bonescript');
+Setting a pin OUTPUT:
+
+b.pinMode("P9_14", b.OUTPUT);
+Writing a pin HIGH:
+
+b.digitalWrite("P9_14", b.HIGH);
+Writing a pin LOW:
+
+b.digitalWrite("P9_14", b.LOW);
+Setting a pin INPUT:
+
+b.pinMode("P8_11", b.INPUT);
+Reading the value from a digital INPUT pin (returns HIGH or LOW):
+
+b.digitalRead("P8_11");
+Setting a pin for pulse-width modulation (PWM) with 50 percent duty cycle:
+
+b.pinMode('P9_14', b.OUTPUT);
+b.analogWrite('P9_14', 0.5);
+Reading the value from an analog INPUT pin (returns a value between 0 and 1):
+
+b.analogRead('P9_40');
+
+
+//========================================================================================
+//Controlling the GPIO with Python
+//You can use the following Python commands to control the GPIO.
+
+Importing Adafruit’s BeagleBone Input Output Library:
+
+import Adafruit_BBIO.GPIO as GPIO
+Setting a pin OUTPUT:
+
+GPIO.setup("P9_14", GPIO.OUT)
+Writing a pin HIGH:
+
+GPIO.output("P9_14", GPIO.HIGH)
+Writing a pin LOW:
+
+GPIO.output("P9_14", GPIO.LOW)
+Setting a pin INPUT:
+
+GPIO.setup("P8_11", GPIO.IN)
+Reading the value from a digital INPUT pin (returns HIGH or LOW):
+
+GPIO.input("P8_11")
+Setting a pin for PWM with 50 percent duty cycle:
+
+import Adafruit_BBIO.PWM as PWM
+PWM.start("P9_14", 50)
+Setting an analog INPUT:
+
+import Adafruit_BBIO.ADC as ADC
+ADC.setup()
+Reading the value from an analog INPUT pin (returns a value between 0 and 1):
+
+analogReading = ADC.read("P9_40")
+
+
+
+//=========================================================================== 
+//adfruit gpio setup
+
+sudo ntpdate pool.ntp.org
+sudo apt-get update
+sudo apt-get install build-essential python-dev python-pip python-smbus -y
+git clone git://github.com/adafruit/adafruit-beaglebone-io-python.git
+cd adafruit-beaglebone-io-python
+sudo python setup.py install
+cd ..
+sudo rm -rf adafruit-beaglebone-io-python
+
+
+//============================================================================
+// Sakis3g connection internet usb modem
+
+
+ always recommend running package update before we start installing anything:
+
+sudo apt-get update
+
+sudo apt-get install ppp
+
+
+wget "http://raspberry-at-home.com/files/sakis3g.tar.gz"
+
+sudo mkdir /usr/bin/modem3g
+sudo chmod 777 /usr/bin/modem3g
+sudo cp sakis3g.tar.gz /usr/bin/modem3g
+cd /usr/bin/modem3g
+sudo tar -zxvf sakis3g.tar.gz
+sudo chmod +x sakis3g
+
+sudo ./sakis3g connect
+Please select APN by using APN variable, or by enabling interactive mode.
+        $ /usr/bin/modem3g/sakis3g --interactive "connect"
+ 
+Available options are:
+Internet         (Internet)
+CUSTOM_APN      Custom APN...
+ 
+Example:
+        $ /usr/bin/modem3g/sakis3g APN="Internet"
+
+
+When you’re done with creation of /etc/sakis3g.conf you can now run:
+sudo ./sakis3g connect
+sudo ./sakis3g disconnect
+
+
+/usr/bin/modem3g/sakis3g --interactive "menu" "console"
+
+
+//==================================================================================
+// LIB QMI setup
+//
+
+apt-get install libqmi-utils
+
+https://techship.com/faq/how-to-step-by-step-set-up-a-data-connection-over-qmi-interface-using-qmicli-and-in-kernel-driver-qmi-wwan-in-linux/
+
+http://www.linuxfromscratch.org/blfs/view/svn/general/libqmi.html
+
+
