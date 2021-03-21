@@ -71,7 +71,7 @@ sudo dhclient
 sudo apt-get update
 sudo apt-get upgrade 
 
-sudo apt-get -y install lxde lxde-core lxde-icon-theme  .......................when running this command the eth0 will stop , use the usb interface to log back in and configure rest
+sudo apt-get -y install lxde lxde-core lxde-icon-theme  .......for GUI.....when running this command the eth0 will stop , use the usb interface to log back in and configure rest
 
 sudo apt-get install xz-utils
 
@@ -93,6 +93,18 @@ sudo apt-get install python3
 sudo apt-get install git-core
 sudo apt-get install cron ....................... task sheduler
 sudo apt-get install mc		.................... midnight comander similar to norton comander/totalcommander
+
+==== if midnight commander does not exist in the apt-get install  follow the following lines =====
+
+nano /etc/apt/sources.list
+A source.list file opens, add these lines in the file and save and exit from the file.
+deb http://ftp.debian.org/debian/ stable main contrib non-free
+deb http://ftp.de.debian.org/debian jessie main
+
+then run 
+sudo apt-get update
+sudo apt-get upgrade
+=====================================================================================================
 
 sudo apt-get install minicom
 sudo apt-get install picocom
@@ -201,7 +213,7 @@ add the folloing in the file
 exit 0
 
 
-Close and save teh file with the above content
+Close and save the file with the above content
 
 
 
@@ -275,7 +287,7 @@ Bringing up interface eth0:                                [  OK  ]
 
 Configure DNS server
 
-echo “nameserver 207.62.187.54” > /etc/resolv.conf
+echo â€œnameserver 207.62.187.54â€ > /etc/resolv.conf
 
 
 
@@ -344,7 +356,7 @@ sudo dhclient
 
 this is your dns name you want to use to resolve adresses
 
-echo “nameserver 8.8.8.8” > /etc/resolv.conf
+echo â€œnameserver 8.8.8.8â€ > /etc/resolv.conf
 
 
 
@@ -495,7 +507,7 @@ b.analogRead('P9_40');
 //Controlling the GPIO with Python
 //You can use the following Python commands to control the GPIO.
 
-Importing Adafruit’s BeagleBone Input Output Library:
+Importing Adafruitâ€™s BeagleBone Input Output Library:
 
 import Adafruit_BBIO.GPIO as GPIO
 Setting a pin OUTPUT:
@@ -572,7 +584,7 @@ Example:
         $ /usr/bin/modem3g/sakis3g APN="Internet"
 
 
-When you’re done with creation of /etc/sakis3g.conf you can now run:
+When youâ€™re done with creation of /etc/sakis3g.conf you can now run:
 sudo ./sakis3g connect
 sudo ./sakis3g disconnect
 
