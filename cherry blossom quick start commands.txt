@@ -293,9 +293,9 @@ echo “nameserver 207.62.187.54” > /etc/resolv.conf
 
 
 
-######################################### LXDE on bbb debian weezy ####################3
+######################################### LXDE on Cherry Blossom debian  ####################3
 
-LXDE With Debian Wheezy
+LXDE 
 
 This section assumes you have completed either of the processes described on Debian On BeagleBone Black. This section section describes how to install LXDE on a micro SD card or the eMMC, with Debian Wheezy, that you can boot from with your BeagleBone Black. It is probably the most stable out of the options listed on this page.
 
@@ -341,7 +341,7 @@ httpredir.debian.org has IPv6 address 2a01:4f8:151:555d::42
 
 
 
-#################### RC.Local ############################ advise do this before istalling the lxde desktop
+#################### RC.Local ############################ advise do this before istalling the lxde desktop and if IP config is required
 
 add startup programs under rc.local
 
@@ -352,7 +352,7 @@ sudo route add default gw 192.168.1.1
 sudo dhclient
 
 
-################# resolve.conf ########################
+################# resolve.conf ######################## optional only if no ping route can be resolved
 
 this is your dns name you want to use to resolve adresses
 
@@ -364,7 +364,7 @@ invoke-rc.d hostname.sh start
 invoke-rc.d networking force-reload
 invoke-rc.d network-manager force-reload
 
-#################### cloning a SD card after setup  is complete######################
+#################### cloning a SD card after setup  is complete###################### when your ready to make a copy of your setup and want to role it out to another
 
 find the device sunder /DEV ensure the disks are unmounted before prosessing the dd command
 
@@ -389,8 +389,8 @@ bs is block sizes , and count is how many blocks do you want , 1M x 4000 = 4GB s
 
 
 
-//======================================================================================
-// setting up desktom manager
+//====================================================================================== optional
+// setting up desktop manager if gui interface is required
 //============================
 
 
@@ -552,7 +552,7 @@ cd ..
 sudo rm -rf adafruit-beaglebone-io-python
 
 
-//============================================================================
+//============================================================================ optional if required
 // Sakis3g connection internet usb modem
 
 
@@ -592,7 +592,7 @@ sudo ./sakis3g disconnect
 /usr/bin/modem3g/sakis3g --interactive "menu" "console"
 
 
-//==================================================================================
+//================================================================================== optional if required
 // LIB QMI setup
 //
 
