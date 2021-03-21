@@ -244,7 +244,7 @@ systemctl daemon-reload
 systemctl start rc.local.service
 systemctl enable rc.local.service
 
-Restart BBB immediately to see if it runs as intended.
+Restart cherry blossom immediately to see if it runs as intended.
 
 reboot 
 
